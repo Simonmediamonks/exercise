@@ -28,6 +28,7 @@ function loadImage(url) {
  */
 function animate(element, duration, x, y) {
   return new Promise(function(resolve) {
+    console.log(resolve);
     TweenLite.to(element, duration, { x: x, y: y, onComplete: resolve });
   });
 }
@@ -61,3 +62,49 @@ var images = [
 ];
 
 /// WRITE CODE UNDER HERE
+
+var i = 0;
+
+function delay(interval) {
+    return new Promise(function(resolve) {
+        setTimeout(resolve, interval);
+    });
+}
+
+images.forEach(function(entry) {
+    //console.log(loadImage(entry));
+    loadImage(entry).then(function(details) {
+      document.getElementById("images").appendChild(details);
+      details.style.visibility = "hidden";
+      delay(4000*i)
+
+      .then(function(resolve) {
+        details.style.visibility = "visible";
+        animate(details, 1, 100, 0);
+        return delay(1000);
+      })
+      .then(function() {
+          animate(details, 1, 100, 100);
+          return delay(1000);
+        })
+      .then(function() {
+          animate(details, 1, 0, 100);
+          return delay(1000);
+        })
+      .then(function() {
+          animate(details, 1, 0, 0);
+          return delay(1000);
+        })
+      .then(function() {
+          animate(details, 1, 0, 0);
+          details.style.visibility = "hidden";
+        });
+      i++;
+      //console.log(details);
+    });
+
+    loadImage(entry).then(null, function(error) {
+      console.log("Nope");
+    });
+    
+});
